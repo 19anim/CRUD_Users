@@ -6,21 +6,29 @@ Users.propTypes = {
     usersList: PropTypes.array,
     onClickedEditButton: PropTypes.func,
     onClickedSaveButton: PropTypes.func,
+    onClickedDeleteButton: PropTypes.func,
 };
 
 Users.defaultProps = {
     usersList: [],
     onClickedEditButton: null,
     onClickedSaveButton: null,
+    onClickedDeleteButton: null,
 }
 
 function Users(props) {
 
-    const { usersList, onClickedEditButton, onClickedSaveButton } = props;
+    const { usersList, onClickedEditButton, onClickedSaveButton, onClickedDeleteButton } = props;
+    var nameToChange = '';
 
     function handleEditButton(user) {
         if (onClickedEditButton)
             onClickedEditButton(user);
+    }
+
+    function handleDeleteButton(user) {
+        if (onClickedDeleteButton)
+            onClickedDeleteButton(user);
     }
 
     function handleSaveButton(user, nameToChange) {
@@ -43,13 +51,15 @@ function Users(props) {
                                 <button onClick={() => {
                                     handleEditButton(user)
                                 }}>Edit</button>
+                                <button onClick={() => {
+                                    handleDeleteButton(user)
+                                }}>Delete</button>
                             </div>
                         </>
                         : <>
                             <div key={user.id}>
                                 <input type="text" placeholder="Input new user name" onChange={handleOnChange} />
                                 <button onClick={() => {
-                                    let nameToChange = '';
                                     handleSaveButton(user, nameToChange)
                                 }}>Save</button>
                             </div>

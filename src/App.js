@@ -50,9 +50,15 @@ function App() {
     SetUsersList([...usersList])
   }
 
+  function handleDeleteButton(user) {
+    let index = usersList.indexOf(user);
+    usersList.splice(index, 1);
+    SetUsersList([...usersList])
+  }
+
   return (
     <div className="App">
-      <Users usersList={usersList} onClickedEditButton={handleEditButton} onClickedSaveButton={handleSaveButton} />
+      <Users usersList={usersList} onClickedEditButton={handleEditButton} onClickedSaveButton={handleSaveButton} onClickedDeleteButton={handleDeleteButton} />
     </div>
   );
 }
