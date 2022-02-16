@@ -18,7 +18,7 @@ Users.defaultProps = {
 
 function Users(props) {
 
-    const { usersList, onClickedEditButton, onClickedSaveButton, onClickedDeleteButton } = props;
+    const { usersList, onClickedEditButton, onClickedSaveButton, onClickedDeleteButton, paginator } = props;
     var nameToChange = '';
 
     function handleEditButton(user) {
@@ -43,27 +43,28 @@ function Users(props) {
     return (
         <ul>
             {usersList.map(
-                (user) => {
-                    return !user.isEditing
-                        ? <>
-                            <div key={user.id}>
-                                <li > {user.name} </li>
-                                <button onClick={() => {
-                                    handleEditButton(user)
-                                }}>Edit</button>
-                                <button onClick={() => {
-                                    handleDeleteButton(user)
-                                }}>Delete</button>
-                            </div>
-                        </>
-                        : <>
-                            <div key={user.id}>
-                                <input type="text" placeholder="Input new user name" onChange={handleOnChange} />
-                                <button onClick={() => {
-                                    handleSaveButton(user, nameToChange)
-                                }}>Save</button>
-                            </div>
-                        </>
+                (user, index) => {
+                    if (index >= ((paginator.page - 1) * paginator.limit) && index < (paginator.page * paginator.limit))
+                        return !user.isEditing
+                            ? <>
+                                <div key={user.id}>
+                                    <li > {user.name} </li>
+                                    <button onClick={() => {
+                                        handleEditButton(user)
+                                    }}>Edit</button>
+                                    <button onClick={() => {
+                                        handleDeleteButton(user)
+                                    }}>Delete</button>
+                                </div>
+                            </>
+                            : <>
+                                <div key={user.id}>
+                                    <input type="text" defaultValue={user.name} onChange={handleOnChange} />
+                                    <button onClick={() => {
+                                        handleSaveButton(user, nameToChange)
+                                    }}>Save</button>
+                                </div>
+                            </>
                 }
             )}
         </ul >

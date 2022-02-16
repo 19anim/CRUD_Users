@@ -1,6 +1,18 @@
 ul > div > li{
     width: 200px;
-    float: left
+    float: left;
+    word-break: break-word;
+}
+
+ul > div{
+    display: flex;
+    justify-self: center;
+    align-items: center;
+}
+
+ul > div > button:first-child{
+    width: 40px;
+    height: 22px;
 }
 
 ul > div > input{

@@ -1,16 +1,27 @@
 import { useEffect, useState } from 'react';
+import FooterButtons from './components/paginator/FooterButtons';
 import Users from './components/users';
 import userListAPI from './components/users/userListAPI.js'
 
 function App() {
 
   const [usersList, SetUsersList] = useState([]);
+  const [paginator, setPaginator] = useState({
+    page: 1,
+    limit: 10,
+    totalItems: 50,
+  });
+  const [resetFilter, setResetFilter] = useState(
+    {
+      isReset: false
+    }
+  );
 
   useEffect(() => {
     let tempList = userListAPI.map((user) => {
       var filteredUser = {
         id: user.id,
-        name: user.first_name + ' ' + user.last_name,
+        name: `${user.first_name} ${user.last_name}`,
         isEditing: false,
       };
       return filteredUser;
@@ -52,13 +63,35 @@ function App() {
 
   function handleDeleteButton(user) {
     let index = usersList.indexOf(user);
+    let lastItem = (paginator.page - 1) * paginator.limit;
+
     usersList.splice(index, 1);
     SetUsersList([...usersList])
+    setPaginator({
+      ...paginator,
+      totalItems: paginator.totalItems - 1,
+    })
+
+    if (index == lastItem && index == paginator.totalItems - 1 && paginator.page != 1) {
+      setPaginator({
+        ...paginator,
+        page: paginator.page - 1,
+        totalItems: paginator.totalItems - 1,
+      })
+    }
+  }
+
+  function handlePaginatorClick(newPage) {
+    setPaginator({
+      ...paginator,
+      page: newPage
+    })
   }
 
   return (
     <div className="App">
-      <Users usersList={usersList} onClickedEditButton={handleEditButton} onClickedSaveButton={handleSaveButton} onClickedDeleteButton={handleDeleteButton} />
+      <Users usersList={usersList} onClickedEditButton={handleEditButton} onClickedSaveButton={handleSaveButton} onClickedDeleteButton={handleDeleteButton} paginator={paginator} />
+      <FooterButtons paginator={paginator} onPaginatorClick={handlePaginatorClick} />
     </div>
   );
 }
