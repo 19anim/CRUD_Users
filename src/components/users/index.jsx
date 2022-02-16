@@ -44,7 +44,8 @@ function Users(props) {
         <ul>
             {usersList.map(
                 (user, index) => {
-                    if (index >= ((paginator.page - 1) * paginator.limit) && index < (paginator.page * paginator.limit))
+                    if (index >= ((paginator.page - 1) * paginator.limit)
+                        && index < (paginator.page * paginator.limit))
                         return !user.isEditing
                             ? <>
                                 <div key={user.id}>

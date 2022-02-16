@@ -14,7 +14,7 @@ FooterButtons.defaultProps = {
 }
 
 function FooterButtons(props) {
-    const { paginator, onPaginatorClick } = props
+    const { paginator, onPaginatorClick, onDeleteClick } = props
     const { page, limit, totalItems } = paginator
     const lastPage = Math.ceil(totalItems / limit);
 
@@ -29,7 +29,8 @@ function FooterButtons(props) {
     }
 
     function handleResetButton() {
-        console.log('reset')
+        if (onDeleteClick)
+            onDeleteClick();
     }
 
     return (
@@ -52,7 +53,7 @@ function FooterButtons(props) {
             </button>
             <button
                 onClick={() => {
-                    handleResetButton(page + 1);
+                    handleResetButton();
                 }}
             >
                 Reset Data
