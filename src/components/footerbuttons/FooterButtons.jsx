@@ -14,7 +14,9 @@ FooterButtons.defaultProps = {
 }
 
 function FooterButtons(props) {
-    const { paginator, onPaginatorClick, onDeleteClick } = props
+
+
+    const { paginator, onPaginatorClick, onResetClick, onSortClick } = props
     const { page, limit, totalItems } = paginator
     const lastPage = Math.ceil(totalItems / limit);
 
@@ -29,8 +31,13 @@ function FooterButtons(props) {
     }
 
     function handleResetButton() {
-        if (onDeleteClick)
-            onDeleteClick();
+        if (onResetClick)
+            onResetClick();
+    }
+
+    function handleSortButton() {
+        if (onSortClick)
+            onSortClick();
     }
 
     return (
@@ -50,6 +57,13 @@ function FooterButtons(props) {
                 }}
             >
                 Next
+            </button>
+            <button
+                onClick={() => {
+                    handleSortButton();
+                }}
+            >
+                Sort
             </button>
             <button
                 onClick={() => {

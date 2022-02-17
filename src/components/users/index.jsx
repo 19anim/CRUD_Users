@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './style.css'
+import PopUp from '../popUp/PopUp';
+import { useState, useRef } from 'react';
 
 Users.propTypes = {
     usersList: PropTypes.array,
@@ -17,9 +19,11 @@ Users.defaultProps = {
 }
 
 function Users(props) {
-
+    const [popupText, setPopupText] = useState(`Do you want to delete this user?`);
+    const [popupToggle, setPopupToggle] = useState(false);
     const { usersList, onClickedEditButton, onClickedSaveButton, onClickedDeleteButton, paginator } = props;
     var nameToChange = '';
+    var userToDelete = useRef({});
 
     function handleEditButton(user) {
         if (onClickedEditButton)
@@ -40,35 +44,56 @@ function Users(props) {
         nameToChange = e.target.value;
     }
 
+    function handlePopupToggle() {
+        setPopupToggle(!popupToggle);
+    }
+
+    function handleYesClick() {
+        console.log(userToDelete.current)
+        handleDeleteButton(userToDelete.current)
+        handlePopupToggle()
+    }
+
+    function handleNoClick() {
+        handlePopupToggle()
+    }
+
     return (
-        <ul>
-            {usersList.map(
-                (user, index) => {
-                    if (index >= ((paginator.page - 1) * paginator.limit)
-                        && index < (paginator.page * paginator.limit))
-                        return !user.isEditing
-                            ? <>
-                                <div key={user.id}>
-                                    <li > {user.name} </li>
-                                    <button onClick={() => {
-                                        handleEditButton(user)
-                                    }}>Edit</button>
-                                    <button onClick={() => {
-                                        handleDeleteButton(user)
-                                    }}>Delete</button>
-                                </div>
-                            </>
-                            : <>
-                                <div key={user.id}>
-                                    <input type="text" defaultValue={user.name} onChange={handleOnChange} />
-                                    <button onClick={() => {
-                                        handleSaveButton(user, nameToChange)
-                                    }}>Save</button>
-                                </div>
-                            </>
-                }
-            )}
-        </ul >
+        <><h1>User List</h1>
+            <ul>
+                {usersList.map(
+                    (user, index) => {
+                        if (index >= ((paginator.page - 1) * paginator.limit)
+                            && index < (paginator.page * paginator.limit))
+                            return !user.isEditing
+                                ? <>
+                                    <div key={user.id}>
+                                        <li> {user.name} </li>
+                                        <button onClick={() => {
+                                            handleEditButton(user);
+                                        }}>Edit</button>
+                                        <button onClick={() => {
+                                            userToDelete.current = user;
+                                            handlePopupToggle();
+                                        }}>Delete</button>
+                                    </div>
+                                </>
+                                : <>
+                                    <div key={user.id}>
+                                        <input type="text" defaultValue={user.name} onChange={handleOnChange} />
+                                        <button onClick={() => {
+                                            handleSaveButton(user, nameToChange);
+                                        }}>Save</button>
+                                    </div>
+                                </>;
+                    }
+                )}
+            </ul>
+            {popupToggle
+                ? <PopUp text={popupText} onYesClick={handleYesClick} onNoClick={handleNoClick} />
+                : null
+            }
+        </>
     );
 }
 
