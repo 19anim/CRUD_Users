@@ -33,7 +33,7 @@ function InputUser(props) {
                     console.log(`${key}: ${userInfo[key]}`)
                 }
             }
-            isEmptyProp ? alert('a') : onSubmit(userInfo);
+            isEmptyProp ? alert('You need to input all information') : onSubmit(userInfo);
         }
         for (const input of e.target) {
             if (input.type !== 'submit' && input.type !== 'select-one')

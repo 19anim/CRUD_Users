@@ -20,9 +20,17 @@ function App() {
   );
 
   useEffect(() => {
-    setFiletedUsersList(userListAPI);
+    let tempList = userListAPI.map((user) => {
+      var filteredUser = {
+        id: user.id,
+        name: `${user.first_name} ${user.last_name}`,
+        isEditing: false,
+      };
+      return filteredUser;
+    });
+    handleSorting(tempList);
     setPaginator({
-      page: 1,
+      page: paginator.page > Math.floor(paginator.totalItems / paginator.limit) ? paginator.page - 1 : paginator.page,
       limit: 10,
       totalItems: 50,
     })
@@ -47,19 +55,6 @@ function App() {
   //   getUsersList();
   // }, [])
 
-  function setFiletedUsersList(defaultUsersList) {
-    addedUserListAPI.current = defaultUsersList;
-    let tempList = defaultUsersList.map((user) => {
-      var filteredUser = {
-        id: user.id,
-        name: `${user.first_name} ${user.last_name}`,
-        isEditing: false,
-      };
-      return filteredUser;
-    });
-    SetUsersList(tempList);
-  }
-
   function handleEditButton(user) {
     let index = usersList.indexOf(user);
     usersList[index].isEditing = !usersList[index].isEditing;
@@ -78,8 +73,6 @@ function App() {
     let lastItem = (paginator.page - 1) * paginator.limit;
 
     usersList.splice(index, 1);
-    userListAPI.splice(index, 1);
-    addedUserListAPI.current = userListAPI;
 
     SetUsersList([...usersList])
     setPaginator({
@@ -110,11 +103,10 @@ function App() {
     })
   }
 
-  function handleSortClick() {
-    var sortedUsersList = [...addedUserListAPI.current];
-    sortedUsersList.sort(function (a, b) {
-      var nameA = `${a.first_name} ${a.last_name}`.toUpperCase();
-      var nameB = `${b.first_name} ${b.last_name}`.toUpperCase();
+  function handleSorting(usersListToSort) {
+    usersListToSort.sort(function (a, b) {
+      var nameA = a.name.toUpperCase();
+      var nameB = b.name.toUpperCase();
       if (nameA < nameB) {
         return -1;
       }
@@ -122,13 +114,16 @@ function App() {
         return 1;
       }
     })
-    setFiletedUsersList(sortedUsersList)
+    SetUsersList(usersListToSort)
   }
 
   function handleOnSubmit(newUser) {
-    addedUserListAPI.current = [...addedUserListAPI.current, newUser]
-    console.log(addedUserListAPI.current)
-    setFiletedUsersList(addedUserListAPI.current)
+    let tempUsersList = [...usersList, {
+      id: newUser.id,
+      name: `${newUser.first_name} ${newUser.last_name}`,
+      isEditing: false,
+    }];
+    handleSorting(tempUsersList)
     setPaginator({
       ...paginator,
       totalItems: paginator.totalItems + 1,
@@ -139,7 +134,7 @@ function App() {
     <div className="App">
       <InputUser onSubmit={handleOnSubmit} />
       <Users usersList={usersList} onClickedEditButton={handleEditButton} onClickedSaveButton={handleSaveButton} onClickedDeleteButton={handleDeleteButton} paginator={paginator} />
-      <FooterButtons paginator={paginator} onPaginatorClick={handlePaginatorClick} onResetClick={handleResetClick} onSortClick={handleSortClick} />
+      <FooterButtons paginator={paginator} onPaginatorClick={handlePaginatorClick} onResetClick={handleResetClick} />
     </div>
   );
 }
